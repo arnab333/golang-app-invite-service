@@ -1,4 +1,4 @@
-# Golang Invite Only Sevice
+# Golang Invite Only Service
 
 - Users will only able to login if they have the invitation code
 - For database `MySQL` has been used
