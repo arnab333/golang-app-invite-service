@@ -27,8 +27,8 @@ type TokenClaims struct {
 }
 
 func createToken(userID string, role string) (*TokenDetails, error) {
-	rtExpires := time.Now().Add(time.Minute * 15)
-	atExpires := time.Now().Add(time.Hour * 24 * 7)
+	atExpires := time.Now().Add(time.Minute * 15)
+	rtExpires := time.Now().Add(time.Hour * 24 * 7)
 
 	td := TokenDetails{
 		AtExpires:   atExpires,
