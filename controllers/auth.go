@@ -83,7 +83,7 @@ func Login(c *gin.Context) {
 		"accessToken":  td.AccessToken,
 		"refreshToken": td.RefreshToken,
 	}
-	c.JSON(http.StatusCreated, helpers.HandleSuccessResponse("", tokens))
+	c.JSON(http.StatusOK, helpers.HandleSuccessResponse("", tokens))
 }
 
 func Logout(c *gin.Context) {
