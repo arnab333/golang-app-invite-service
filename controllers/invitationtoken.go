@@ -12,7 +12,7 @@ func VerifyInvitationToken(c *gin.Context) {
 	inviteToken := c.Param("inviteToken")
 
 	if inviteToken == "" {
-		c.JSON(http.StatusUnprocessableEntity, helpers.HandleErrorResponse(helpers.RequiredInvitationToken))
+		c.JSON(http.StatusBadRequest, helpers.HandleErrorResponse(helpers.RequiredInvitationToken))
 		c.Abort()
 		return
 	}
@@ -20,12 +20,12 @@ func VerifyInvitationToken(c *gin.Context) {
 	_, err := services.GetInviteToken(inviteToken)
 
 	if err != nil {
-		c.JSON(http.StatusUnprocessableEntity, helpers.HandleErrorResponse("Invalid Invitation Token!"))
+		c.JSON(http.StatusBadRequest, helpers.HandleErrorResponse("Invalid Invitation Token!"))
 		c.Abort()
 		return
 	}
 
-	c.JSON(http.StatusCreated, helpers.HandleSuccessResponse("Login Success!", nil))
+	c.JSON(http.StatusOK, helpers.HandleSuccessResponse("Login Success!", nil))
 }
 
 func CreateInvitationToken(c *gin.Context) {
