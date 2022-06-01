@@ -17,4 +17,4 @@
 
 ## API Documentation
 
-- https://documenter.getpostman.com/view/8548410/Uz5FHbbT
+- https://documenter.getpostman.com/view/8548410/Uz5FHbpg
