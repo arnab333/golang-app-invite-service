@@ -7,9 +7,11 @@ import (
 )
 
 func invitationTokenRoutes(rg *gin.RouterGroup) {
-	rg.GET("/verify-invite/:inviteToken", middlewares.Throttle(1, 3), controllers.VerifyInvitationToken)
+	rg.GET("/verify-invitation/:inviteToken", middlewares.Throttle(1, 3), controllers.VerifyInvitationToken)
+
+	rg.GET("/invitation-tokens", middlewares.VerifyToken, middlewares.VerifyAdminRole, controllers.GetAllInvitationTokens)
 
 	rg.POST("/create-invitation-token", middlewares.VerifyToken, middlewares.VerifyAdminRole, controllers.CreateInvitationToken)
 
-	rg.DELETE("/delete-invitation-token", middlewares.VerifyToken, middlewares.VerifyAdminRole, controllers.DeleteInvitationToken)
+	rg.DELETE("/disable-invitation-token", middlewares.VerifyToken, middlewares.VerifyAdminRole, controllers.DisableInvitationToken)
 }

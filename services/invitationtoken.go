@@ -1,33 +1,70 @@
 package services
 
 import (
-	"context"
-	"fmt"
+	"errors"
 	"time"
 
 	"github.com/arnab333/golang-app-invite-service/helpers"
 )
 
-func CreateInviteToken(ctx context.Context, authorID string) (string, error) {
-	it := "INVITE-" + helpers.GetRandomString(16)
+type InviteToken struct {
+	Token     string    `json:"token"`
+	IsActive  bool      `json:"isActive"`
+	ExpiresAt time.Time `json:"-"`
+}
 
-	now := time.Now()
+var InvitationTokens []InviteToken
+
+func CreateInviteToken(authorID string) (string, error) {
+	it := "INVITE-" + helpers.GetRandomString(16)
 
 	expires := time.Now().Add(time.Hour * 24 * 7)
 
-	err := redisConn.redisClient.Set(ctx, it, authorID, expires.Sub(now)).Err()
-	if err != nil {
-		fmt.Println(err.Error())
-		return "", err
-	}
+	InvitationTokens = append(InvitationTokens, InviteToken{
+		Token:     it,
+		IsActive:  true,
+		ExpiresAt: expires,
+	})
 
 	return it, nil
 }
 
-func DeleteInviteToken(ctx context.Context, key string) (int64, error) {
-	deleted, err := redisConn.redisClient.Del(ctx, key).Result()
-	if err != nil {
-		return 0, err
+func DisableInviteToken(key string) InviteToken {
+	var token InviteToken
+	for idx, v := range InvitationTokens {
+		if v.Token == key {
+			InvitationTokens[idx].IsActive = false
+			token = InvitationTokens[idx]
+			break
+		}
 	}
-	return deleted, nil
+	return token
 }
+
+func GetAllInviteTokens() []InviteToken {
+	return InvitationTokens
+}
+
+func GetInviteToken(key string) (*InviteToken, error) {
+	var inviteToken InviteToken
+	for _, v := range InvitationTokens {
+		if v.Token == key && v.IsActive {
+			inviteToken = v
+			break
+		}
+	}
+	if inviteToken.Token != "" {
+		return &inviteToken, nil
+	}
+
+	return nil, errors.New("invalid invite token")
+}
+
+// func DeleteInviteToken(key string) string {
+// 	for idx, v := range InvitationTokens {
+// 		if v.Token == key {
+// 			InvitationTokens = append(InvitationTokens[0:idx], InvitationTokens[idx+1:]...)
+// 		}
+// 	}
+// 	return "Successfully deleted invite token"
+// }
